@@ -160,6 +160,11 @@ extern enum BacklightOnRxTx_t gSetting_backlight_on_tx_rx;
 	extern bool              gSetting_mic_bar;
 #endif
 extern bool                  gSetting_live_DTMF_decoder;
+
+#ifdef ENABLE_APRS_RECEIVE
+extern bool                  gSetting_live_APRS_decoder;
+#endif
+
 extern uint8_t               gSetting_battery_text;
 
 extern bool                  gMonitor;

@@ -40,6 +40,7 @@ ENABLE_REDUCE_LOW_MID_TX_POWER?= 0
 ENABLE_BYP_RAW_DEMODULATORS   ?= 0
 ENABLE_BLMIN_TMP_OFF          ?= 0
 ENABLE_SCAN_RANGES            ?= 1
+ENABLE_APRS_RECEIVE           ?= 1
 
 # ---- DEBUGGING ----
 ENABLE_AM_FIX_SHOW_DATA       ?= 0
@@ -113,6 +114,9 @@ ifeq ($(ENABLE_AIRCOPY),1)
 	OBJS += app/aircopy.o
 endif
 OBJS += app/app.o
+ifeq ($(ENABLE_APRS_RECEIVE),1)
+	OBJS += app/aprs.o
+endif
 OBJS += app/chFrScanner.o
 OBJS += app/common.o
 OBJS += app/dtmf.o
@@ -376,6 +380,9 @@ ifeq ($(ENABLE_UART_RW_BK_REGS),1)
 endif
 ifeq ($(ENABLE_CUSTOM_MENU_LAYOUT),1)
 	CFLAGS  += -DENABLE_CUSTOM_MENU_LAYOUT
+endif
+ifeq ($(ENABLE_APRS_RECEIVE),1)
+	CFLAGS  += -DENABLE_APRS_RECEIVE
 endif
 
 LDFLAGS =

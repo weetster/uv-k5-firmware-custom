@@ -114,6 +114,9 @@ const t_menu_item MenuList[] =
 	{"D List", VOICE_ID_INVALID,                       MENU_D_LIST        },
 #endif
 	{"D Live", VOICE_ID_INVALID,                       MENU_D_LIVE_DEC    }, // live DTMF decoder
+#ifdef ENABLE_APRS_RECEIVE
+	{"A Live", VOICE_ID_INVALID,                       MENU_APRS_LIVE_DEC }, // live APRS decoder
+#endif
 #ifdef ENABLE_AM_FIX
 	{"AM Fix", VOICE_ID_INVALID,                       MENU_AM_FIX        },
 #endif
@@ -625,6 +628,9 @@ void UI_DisplayMenu(void)
 		case MENU_D_DCD:
 #endif
 		case MENU_D_LIVE_DEC:
+#ifdef ENABLE_APRS_RECEIVE
+		case MENU_APRS_LIVE_DEC:
+#endif
 		#ifdef ENABLE_NOAA
 			case MENU_NOAA_S:
 		#endif

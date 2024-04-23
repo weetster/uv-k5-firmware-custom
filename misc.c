@@ -99,6 +99,11 @@ enum BacklightOnRxTx_t gSetting_backlight_on_tx_rx;
 	bool          gSetting_mic_bar;
 #endif
 bool              gSetting_live_DTMF_decoder;
+
+#ifdef ENABLE_APRS_RECEIVE
+	bool          gSetting_live_APRS_decoder;
+#endif
+
 uint8_t           gSetting_battery_text;
 
 bool              gMonitor = false;           // true opens the squelch

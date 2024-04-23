@@ -19,6 +19,9 @@
 #if !defined(ENABLE_OVERLAY)
 	#include "ARMCM0.h"
 #endif
+#ifdef ENABLE_APRS_RECEIVE
+	#include "app/aprs.h"
+#endif
 #include "app/dtmf.h"
 #include "app/generic.h"
 #include "app/menu.h"
@@ -240,6 +243,9 @@ int MENU_GetLimits(uint8_t menu_id, int32_t *pMin, int32_t *pMax)
 		case MENU_D_DCD:
 #endif
 		case MENU_D_LIVE_DEC:
+#ifdef ENABLE_APRS_RECEIVE
+		case MENU_APRS_LIVE_DEC:
+#endif
 		#ifdef ENABLE_NOAA
 			case MENU_NOAA_S:
 		#endif
@@ -686,6 +692,20 @@ void MENU_AcceptSetting(void)
 			}
 			return;
 #endif
+
+#ifdef ENABLE_APRS_RECEIVE
+		case MENU_APRS_LIVE_DEC:
+			gSetting_live_APRS_decoder = gSubMenuSelection;
+			gAPRS_RX_live_timeout = 0;
+			memset(gAPRS_RX_live, 0, sizeof(gAPRS_RX_live));
+			if (gSetting_live_APRS_decoder)
+				BK4819_PrepareFSKReceive();
+			else
+				BK4819_ResetFSK();
+			gUpdateStatus            = true;
+			break;
+#endif
+
 		case MENU_PONMSG:
 			gEeprom.POWER_ON_DISPLAY_MODE = gSubMenuSelection;
 			break;
@@ -1065,6 +1085,12 @@ void MENU_ShowCurrentSetting(void)
 		case MENU_D_LIVE_DEC:
 			gSubMenuSelection = gSetting_live_DTMF_decoder;
 			break;
+
+#ifdef ENABLE_APRS_RECEIVE
+		case MENU_APRS_LIVE_DEC:
+			gSubMenuSelection = gSetting_live_APRS_decoder;
+			break;
+#endif
 
 		case MENU_PONMSG:
 			gSubMenuSelection = gEeprom.POWER_ON_DISPLAY_MODE;

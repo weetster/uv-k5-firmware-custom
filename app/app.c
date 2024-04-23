@@ -25,6 +25,9 @@
 	#include "app/aircopy.h"
 #endif
 #include "app/app.h"
+#ifdef ENABLE_APRS_RECEIVE
+	#include "app/aprs.h"
+#endif
 #include "app/chFrScanner.h"
 #include "app/dtmf.h"
 #ifdef ENABLE_FLASHLIGHT
@@ -703,6 +706,27 @@ static void CheckRadioInterrupts(void)
 			AIRCOPY_StorePacket();
 		}
 #endif
+
+#ifdef ENABLE_APRS_RECEIVE
+		if (interrupts.fskFifoAlmostFull)
+		{
+			// Copy 8 bytes from FSK FIFO
+			char newAPRSData[8 + 1] = { 0 };
+			for (unsigned int i = 0; i < 4; i++) {
+				newAPRSData[i * sizeof(uint16_t)] = BK4819_ReadRegister(BK4819_REG_5F);
+			}
+
+			if (gCurrentFunction != FUNCTION_TRANSMIT && gSetting_live_DTMF_decoder) {
+				// Make room
+				size_t spaceRequired = strlen(newAPRSData);
+				size_t amountToMove = strlen(gAPRS_RX_live);
+				memmove(gAPRS_RX_live, gDTMF_RX_live + spaceRequired, amountToMove);
+				memcpy(gAPRS_RX_live + amountToMove, newAPRSData, spaceRequired);
+				gAPRS_RX_live_timeout = DTMF_RX_live_timeout_500ms;
+				gUpdateDisplay        = true;
+			}
+		}
+#endif
 	}
 }
 
@@ -1298,6 +1322,26 @@ void APP_TimeSlice500ms(void)
 			}
 		}
 	}
+
+#ifdef ENABLE_APRS_RECEIVE
+	if (gAPRS_RX_live_timeout > 0)
+	{
+		#ifdef ENABLE_RSSI_BAR
+			if (center_line == CENTER_LINE_DTMF_DEC ||
+				center_line == CENTER_LINE_NONE)  // wait till the center line is free for us to use before timing out
+		#endif
+		{
+			if (--gAPRS_RX_live_timeout == 0)
+			{
+				if (gAPRS_RX_live[0] != 0)
+				{
+					memset(gAPRS_RX_live, 0, sizeof(gAPRS_RX_live));
+					gUpdateDisplay   = true;
+				}
+			}
+		}
+	}
+#endif
 
 	if (gMenuCountdown > 0)
 		if (--gMenuCountdown == 0)
