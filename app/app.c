@@ -716,13 +716,13 @@ static void CheckRadioInterrupts(void)
 				newAPRSData[i * sizeof(uint16_t)] = BK4819_ReadRegister(BK4819_REG_5F);
 			}
 
-			if (gCurrentFunction != FUNCTION_TRANSMIT && gSetting_live_DTMF_decoder) {
+			if (gCurrentFunction != FUNCTION_TRANSMIT && gSetting_live_APRS_decoder) {
 				// Make room
 				size_t spaceRequired = strlen(newAPRSData);
 				size_t amountToMove = strlen(gAPRS_RX_live);
-				memmove(gAPRS_RX_live, gDTMF_RX_live + spaceRequired, amountToMove);
+				memmove(gAPRS_RX_live, gAPRS_RX_live + spaceRequired, amountToMove);
 				memcpy(gAPRS_RX_live + amountToMove, newAPRSData, spaceRequired);
-				gAPRS_RX_live_timeout = DTMF_RX_live_timeout_500ms;
+				gAPRS_RX_live_timeout = APRS_RX_live_timeout_500ms;
 				gUpdateDisplay        = true;
 			}
 		}

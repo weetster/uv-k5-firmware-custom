@@ -90,6 +90,11 @@ extern const uint8_t         menu_timeout_500ms;
 extern const uint16_t        menu_timeout_long_500ms;
 
 extern const uint8_t         DTMF_RX_live_timeout_500ms;
+
+#ifdef ENABLE_APRS_RECEIVE
+extern const uint8_t         APRS_RX_live_timeout_500ms;
+#endif
+
 #ifdef ENABLE_DTMF_CALLING
 extern const uint8_t         DTMF_RX_timeout_500ms;
 extern const uint8_t         DTMF_decode_ring_countdown_500ms;
